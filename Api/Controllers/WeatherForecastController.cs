@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Services.Abstract;
 
 namespace NewsProject.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -12,10 +13,13 @@ namespace NewsProject.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly INewsService _newsService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+            INewsService newsService)
         {
             _logger = logger;
+            _newsService = newsService;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
