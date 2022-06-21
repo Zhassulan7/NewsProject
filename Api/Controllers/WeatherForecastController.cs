@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstract;
 
@@ -21,8 +22,9 @@ namespace NewsProject.Controllers
             _logger = logger;
             _newsService = newsService;
         }
-
+       
         [HttpGet(Name = "GetWeatherForecast")]
+        [Authorize(Roles = "Employee")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

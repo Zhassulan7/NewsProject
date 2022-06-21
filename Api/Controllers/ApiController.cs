@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models.DTO;
 using Services.Abstract;
 
@@ -22,14 +23,16 @@ namespace NewsProject.Controllers
         {
             return _newsService.GetNewsByDate(from, to);
         }
-
+       
         [HttpGet("topten")]
+        [Authorize(Roles = "Admin")]
         public IEnumerable<string> GetTopTenWordsInNews()
         {
             return _newsService.GetTopTenWordsInNews();
         }
-
+     
         [HttpGet("search")]
+        [Authorize(Roles = "Employee,Admin")]
         public IEnumerable<News> SearchByText(string text)
         {
             return _newsService.SearchByText(text);

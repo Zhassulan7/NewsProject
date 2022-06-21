@@ -4,7 +4,7 @@ using Models.DTO;
 using System.Net;
 using System.Text;
 
-namespace Repository
+namespace Repository.ForInitializingDb
 {
     public class InformParse
     {
