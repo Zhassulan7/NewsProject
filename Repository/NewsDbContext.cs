@@ -5,13 +5,14 @@ namespace Repository
 {
     public class NewsDbContext : DbContext
     {
-        public NewsDbContext() => Database.EnsureCreated();
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=NewsProject"); 
-        }
+        public NewsDbContext(DbContextOptions<NewsDbContext> options) :
+            base(options) => Database.EnsureCreated();
 
         public DbSet<News> News { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<News>().HasData(new InformParse().GetParsedData());            
+        }
     }
 }

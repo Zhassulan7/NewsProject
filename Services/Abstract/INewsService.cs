@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.Abstract
+namespace Services.Abstract
 {
-    public interface INewsWrite
+    public interface INewsService
     {
-        void Write();
+        IEnumerable<News> GetNewsByDate(DateTime from, DateTime to);
     }
 }

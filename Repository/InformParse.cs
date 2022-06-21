@@ -1,21 +1,15 @@
 ﻿using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
 using Models.DTO;
-using NewsParser.Helpers;
+using System.Net;
 using System.Text;
 
-namespace NewsParser
+namespace Repository
 {
-    public class InformParse : Parser
+    public class InformParse
     {
-        private readonly string _mainUrl;
-        private readonly string _linksPage;
-
-        public InformParse(string mainUrl, string linksPage)
-        {
-            _mainUrl = mainUrl;
-            _linksPage = linksPage;
-        }
+        private readonly string _mainUrl = "https://lenta.inform.kz";
+        private readonly string _linksPage = "https://lenta.inform.kz/ru/archive/?date=";
 
         public IEnumerable<News> GetParsedData()
         {
@@ -25,9 +19,26 @@ namespace NewsParser
             var news = GetNewsByPages(newsPages);
             return news;
         }
+        private IEnumerable<string> GetNewsPagesByUrls(IEnumerable<string> urls)
+        {
+            foreach (var url in urls)
+            {
+                yield return GetHtmlByLink(url);
+            }
+        }
+
+        private string GetHtmlByLink(string url)
+        {
+            using (WebClient webClient = new())
+            {
+                string data = webClient.DownloadString(url);
+                return data;
+            }
+        }
 
         private IEnumerable<News> GetNewsByPages(IEnumerable<string> htmlPages)
         {
+            int calc = 1;
             foreach (var html in htmlPages)
             {
                 var htmlDocument = new HtmlDocument();
@@ -40,13 +51,14 @@ namespace NewsParser
                     text.Append(innerText ?? "");
                 }
 
-                yield return new News 
-                { 
+                yield return new News
+                {
+                    Id = calc++,
                     CreateDate = DateTime.Parse(htmlDocument.DocumentNode.QuerySelector(".date_article").InnerText),
                     Title = htmlDocument.DocumentNode.QuerySelector("h1").InnerText,
                     Text = text.ToString()
                 };
-            } 
+            }
         }
 
         private IEnumerable<string> GetLinksOnNews(string html)
@@ -55,9 +67,9 @@ namespace NewsParser
             htmlDocument.LoadHtml(html);
             var links = htmlDocument.DocumentNode
                 .QuerySelectorAll(".lenta_news_title")
-                .Select(t=> _mainUrl + t.Attributes["href"].Value);
+                .Select(t => _mainUrl + t.Attributes["href"].Value);
             return links;
-        }   
-        
+        }
+
     }
 }
