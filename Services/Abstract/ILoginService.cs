@@ -1,10 +1,10 @@
-﻿using Models.DTO;
+﻿using Models;
 
 namespace Services.Abstract
 {
     public interface ILoginService
     {
-        Login Authenticate(string username, string password);
+        Login AuthenticateOrNull(string username, string password);
         string GenerateToken(Login login);
     }
 }

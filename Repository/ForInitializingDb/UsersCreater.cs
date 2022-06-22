@@ -1,4 +1,4 @@
-﻿using Models.DTO;
+﻿using Models;
 using Models.Enums;
 using System;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace Repository.ForInitializingDb
                 {
                     Id = 2,
                     UserName = "Npc",
-                    Password = HashPassword("admin"),
+                    Password = HashPassword("user"),
                     Role = UserRoles.Employee.ToString()
                 }
             };

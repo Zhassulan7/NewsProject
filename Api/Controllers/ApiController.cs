@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models.DTO;
+using Models;
 using Services.Abstract;
 
 namespace NewsProject.Controllers
@@ -21,7 +21,7 @@ namespace NewsProject.Controllers
         [HttpGet("posts")]
         public IEnumerable<News> GetNewsByDate(DateTime from, DateTime to)
         {
-            return _newsService.GetNewsByDate(from, to);
+            return _newsService.GetNewsByDate(from, to.AddDays(1).AddMinutes(-1));
         }
        
         [HttpGet("topten")]

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models.DTO;
+using Models;
 using Repository.ForInitializingDb;
 
 namespace Repository

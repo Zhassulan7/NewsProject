@@ -1,6 +1,6 @@
 ﻿using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
-using Models.DTO;
+using Models;
 using System.Net;
 using System.Text;
 

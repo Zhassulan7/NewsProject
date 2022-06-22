@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Models;
-using Models.DTO;
 using Services.Abstract;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace NewsProject.Controllers
 {
@@ -26,7 +20,7 @@ namespace NewsProject.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest login)
         {
-            var user = _loginService.Authenticate(login.userName, login.password);
+            var user = _loginService.AuthenticateOrNull(login.UserName, login.Password);
 
             if (user != null)
             {
