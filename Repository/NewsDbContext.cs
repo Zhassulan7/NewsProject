@@ -12,9 +12,9 @@ namespace Repository
         public DbSet<News> News { get; set; }
         public DbSet<User> Logins { get; set; }
 
-        protected override async void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<News>().HasData(await new InformNews().GetData());    
+            modelBuilder.Entity<News>().HasData(new InformNews().GetData());    
             modelBuilder.Entity<User>().HasData(new UsersData().Get());
         }
     }

@@ -54,23 +54,15 @@ namespace Services.Concrete
         }
 
         private bool VerifyHashedPassword(string hashedPassword, string password)
-        {
-            byte[] buffer4;
-            if (hashedPassword == null)
-            {
+        {   
+            if (string.IsNullOrEmpty(hashedPassword) || string.IsNullOrEmpty(password))
                 return false;
-            }
-            if (password == null)
-            {
-                throw new ArgumentNullException("password");
-            }
 
+            byte[] buffer4;
             byte[] src = Convert.FromBase64String(hashedPassword);
 
             if ((src.Length != 0x31) || (src[0] != 0))
-            {
-                return false;
-            }
+                return false;        
 
             byte[] dst = new byte[0x10];
             Buffer.BlockCopy(src, 1, dst, 0, 0x10);
@@ -85,7 +77,7 @@ namespace Services.Concrete
             return ByteArraysEqual(buffer3, buffer4);
         }
 
-        private static bool ByteArraysEqual(byte[] firstHash, byte[] secondHash)
+        private bool ByteArraysEqual(byte[] firstHash, byte[] secondHash)
         {
             int minHashLength = firstHash.Length <= secondHash.Length ? firstHash.Length : secondHash.Length;
             var xor = firstHash.Length ^ secondHash.Length;

@@ -10,32 +10,33 @@ namespace Repository.ForInitializingDb
         private readonly string _mainUrl = "https://lenta.inform.kz";
         private readonly string _linksPage = "https://lenta.inform.kz/ru/archive/?date=";
 
-        public async Task<IEnumerable<News>> GetData()
+        public IEnumerable<News> GetData()
         {
             var getHtml = GetHtmlByLink(_linksPage);
-            var links = GetLinksOnNews(await getHtml);
+            var links = GetLinksOnNews(getHtml);
             var newsPages = GetNewsPagesByUrls(links);
-            var news = GetNewsByPages(await newsPages);
+            var news = GetNewsByPages(newsPages);
             return news;
         }
 
-        private async Task<IEnumerable<string>> GetNewsPagesByUrls(IEnumerable<string> urls)
+        private IEnumerable<string> GetNewsPagesByUrls(IEnumerable<string> urls)
         {
             List<string> htmls = new List<string>();
+
             foreach (var url in urls)
             {
-                htmls.Add(await GetHtmlByLink(url));
+                htmls.Add(GetHtmlByLink(url));
             }
+
             return htmls;
         }
 
-        private async Task<string> GetHtmlByLink(string url)
+        private string GetHtmlByLink(string url)
         {
-            using (HttpClient httpClient = new())
-            {
-                string data = await httpClient.GetStringAsync(url);
-                return data;
-            }
+            using HttpClient httpClient = new();
+            string data = httpClient.GetStringAsync(url).Result;
+
+            return data;
         }
 
         private IEnumerable<News> GetNewsByPages(IEnumerable<string> htmlPages)

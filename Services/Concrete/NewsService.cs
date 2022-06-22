@@ -7,6 +7,7 @@ namespace Services.Concrete
     public class NewsService : INewsService
     {
         private readonly NewsDbContext _newsDbContext;
+
         public NewsService(NewsDbContext newsDbContext)
         {
             _newsDbContext = newsDbContext;
@@ -20,6 +21,7 @@ namespace Services.Concrete
         public IEnumerable<string> GetTopTenWordsInNews()
         {
             char[] separators = { ',', '.', '!', '?', ';', ':', ' ', '"', ')', '(', '«', '»', '\t', '-', '\\' };
+
             var result = string.Join(" ", _newsDbContext.News.Select(n => n.Text.ToLower())
                 .ToList())
                 .Split(separators, StringSplitOptions.RemoveEmptyEntries)
