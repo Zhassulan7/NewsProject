@@ -4,9 +4,9 @@ namespace Services.Abstract
 {
     public interface INewsService
     {
-        IEnumerable<News> GetNewsByDate(DateTime from, DateTime to);
-        IEnumerable<string> GetTopTenWordsInNews();
-        IEnumerable<News> SearchByText(string text);
+        Task<IEnumerable<News>> GetNewsByDate(DateTime from, DateTime to);
+        Task<IEnumerable<string>> GetTopTenWordsInNews();
+        Task<IEnumerable<News>> SearchByText(string text);
 
     }
 }

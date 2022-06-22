@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models.Tables;
 using Repository;
@@ -21,9 +22,9 @@ namespace Services.Concrete
             _config = config;
         }
 
-        public User AuthenticateOrNull(string username, string password)
+        public async Task<User> GetUserOrNull(string username, string password)
         {
-            var currentUser = _newsDbContext.Logins.FirstOrDefault(l => l.Name.ToLower() == username.ToLower());
+            var currentUser = await _newsDbContext.Users.SingleAsync(l => l.Name.ToLower() == username.ToLower());
 
             if (currentUser is not null && VerifyHashedPassword(currentUser.Password, password))
             {
@@ -33,15 +34,15 @@ namespace Services.Concrete
             return null;
         }
 
-        public string GenerateToken(User login)
+        public string GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, login.Name),
-                new Claim(ClaimTypes.Role, login.Role)
+                new Claim(ClaimTypes.NameIdentifier, user.Name),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
@@ -59,14 +60,15 @@ namespace Services.Concrete
                 return false;
 
             byte[] buffer4;
-            byte[] src = Convert.FromBase64String(hashedPassword);
+            var src = Convert.FromBase64String(hashedPassword);
 
             if ((src.Length != 0x31) || (src[0] != 0))
                 return false;        
 
-            byte[] dst = new byte[0x10];
+            var dst = new byte[0x10];
             Buffer.BlockCopy(src, 1, dst, 0, 0x10);
-            byte[] buffer3 = new byte[0x20];
+
+            var buffer3 = new byte[0x20];
             Buffer.BlockCopy(src, 0x11, buffer3, 0, 0x20);
 
             using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, dst, 0x3e8))

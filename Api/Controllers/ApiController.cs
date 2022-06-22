@@ -20,52 +20,21 @@ namespace NewsProject.Controllers
         }
 
         [HttpGet("posts")]
-        public IActionResult GetNewsByDate(DateTime from, DateTime to)
+        public async Task<IActionResult> GetNewsByDate(DateTime from, DateTime to)
         {
-            try
-            {
-                throw new NullReferenceException("Ou ou ou");
-                return Ok(_newsService.GetNewsByDate(from, to.AddDays(1).AddMinutes(-1)));
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured watch in Log");
-            }
-            
+            return Ok(_newsService.GetNewsByDate(from, to));
         }
        
         [HttpGet("topten")]
         public IActionResult GetTopTenWordsInNews()
         {
-            try
-            {
-                return Ok(_newsService.GetTopTenWordsInNews());
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured watch in Log");
-            }
-            
+            return Ok(_newsService.GetTopTenWordsInNews());
         }
      
         [HttpGet("search")]
         public IActionResult SearchByText(string text)
         {
-            try
-            {
-                return Ok(_newsService.SearchByText(text));
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured watch in Log");
-            }
-            
+            return Ok(_newsService.SearchByText(text));
         }
     }
 }

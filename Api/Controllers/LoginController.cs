@@ -20,11 +20,11 @@ namespace NewsProject.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest login)
+        public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
             try
             {
-                var user = _loginService.AuthenticateOrNull(login.UserName, login.Password);
+                var user = await _loginService.GetUserOrNull(login.UserName, login.Password);
 
                 if (user != null)
                 {

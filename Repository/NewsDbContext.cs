@@ -9,7 +9,7 @@ namespace Repository
             base(options) => Database.EnsureCreated();
 
         public DbSet<News> News { get; set; }
-        public DbSet<User> Logins { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

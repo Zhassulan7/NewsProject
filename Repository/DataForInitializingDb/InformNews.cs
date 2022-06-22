@@ -21,7 +21,7 @@ namespace Repository.ForInitializingDb
 
         private IEnumerable<string> GetNewsPagesByUrls(IEnumerable<string> urls)
         {
-            List<string> htmls = new List<string>();
+            var htmls = new List<string>();
 
             foreach (var url in urls)
             {
@@ -33,21 +33,20 @@ namespace Repository.ForInitializingDb
 
         private string GetHtmlByLink(string url)
         {
-            using HttpClient httpClient = new();
-            string data = httpClient.GetStringAsync(url).Result;
+            var httpClient =  new HttpClient();
+            var data = httpClient.GetStringAsync(url).Result;
 
             return data;
         }
 
         private IEnumerable<News> GetNewsByPages(IEnumerable<string> htmlPages)
         {
-            int calc = 1;
             foreach (var html in htmlPages)
             {
                 var htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(html);
 
-                StringBuilder text = new StringBuilder();
+                var text = new StringBuilder();
 
                 foreach (var innerText in htmlDocument.DocumentNode.QuerySelectorAll("p").Select(p => p.InnerText))
                 {
@@ -56,7 +55,6 @@ namespace Repository.ForInitializingDb
 
                 yield return new News
                 {
-                    Id = calc++,
                     CreateDate = DateTime.Parse(htmlDocument.DocumentNode.QuerySelector(".date_article").InnerText),
                     Title = htmlDocument.DocumentNode.QuerySelector("h1").InnerText,
                     Text = text.ToString()

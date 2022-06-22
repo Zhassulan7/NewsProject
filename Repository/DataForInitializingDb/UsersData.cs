@@ -11,14 +11,12 @@ namespace Repository.ForInitializingDb
             return new List<User> {
                 new User
                 {
-                    Id = 1,
                     Name = "Ninja",
                     Password = HashPassword("admin"),
                     Role = UserRoles.Admin.ToString()
                 },
                 new User
                 {
-                    Id = 2,
                     Name = "Npc",
                     Password = HashPassword("user"),
                     Role = UserRoles.Employee.ToString()
@@ -42,7 +40,7 @@ namespace Repository.ForInitializingDb
                 buffer2 = bytes.GetBytes(0x20);
             }
 
-            byte[] dst = new byte[0x31];
+            var dst = new byte[0x31];
             Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
             Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
 
