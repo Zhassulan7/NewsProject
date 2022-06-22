@@ -6,32 +6,35 @@ using System.Text;
 
 namespace Repository.ForInitializingDb
 {
-    public class InformParse
+    public class InformNews
     {
         private readonly string _mainUrl = "https://lenta.inform.kz";
         private readonly string _linksPage = "https://lenta.inform.kz/ru/archive/?date=";
 
-        public IEnumerable<News> GetParsedData()
+        public async Task<IEnumerable<News>> GetData()
         {
             var getHtml = GetHtmlByLink(_linksPage);
-            var links = GetLinksOnNews(getHtml);
+            var links = GetLinksOnNews(await getHtml);
             var newsPages = GetNewsPagesByUrls(links);
-            var news = GetNewsByPages(newsPages);
+            var news = GetNewsByPages(await newsPages);
             return news;
         }
-        private IEnumerable<string> GetNewsPagesByUrls(IEnumerable<string> urls)
+
+        private async Task<IEnumerable<string>> GetNewsPagesByUrls(IEnumerable<string> urls)
         {
+            List<string> htmls = new List<string>();
             foreach (var url in urls)
             {
-                yield return GetHtmlByLink(url);
+                htmls.Add(await GetHtmlByLink(url));
             }
+            return htmls;
         }
 
-        private string GetHtmlByLink(string url)
+        private async Task<string> GetHtmlByLink(string url)
         {
-            using (WebClient webClient = new())
+            using (HttpClient httpClient = new())
             {
-                string data = webClient.DownloadString(url);
+                string data = await httpClient.GetStringAsync(url);
                 return data;
             }
         }
@@ -70,6 +73,5 @@ namespace Repository.ForInitializingDb
                 .Select(t => _mainUrl + t.Attributes["href"].Value);
             return links;
         }
-
     }
 }
