@@ -22,19 +22,19 @@ namespace NewsProject.Controllers
         [HttpGet("posts")]
         public async Task<IActionResult> GetNewsByDate(DateTime from, DateTime to)
         {
-            return Ok(_newsService.GetNewsByDate(from, to));
+            return Ok(await _newsService.GetNewsByDate(from, to));
         }
        
         [HttpGet("topten")]
-        public IActionResult GetTopTenWordsInNews()
+        public async Task<IActionResult> GetTopTenWordsInNews()
         {
-            return Ok(_newsService.GetTopTenWordsInNews());
+            return Ok(await _newsService.GetTopTenWordsInNews());
         }
      
         [HttpGet("search")]
-        public IActionResult SearchByText(string text)
+        public async Task<IActionResult> SearchByText(string text)
         {
-            return Ok(_newsService.SearchByText(text));
+            return Ok(await _newsService.SearchByText(text));
         }
     }
 }
