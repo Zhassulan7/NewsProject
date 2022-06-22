@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Tables;
+using NLog;
 using Services.Abstract;
 
 namespace NewsProject.Controllers
@@ -11,30 +12,60 @@ namespace NewsProject.Controllers
     public class ApiController : ControllerBase
     {
         private readonly INewsService _newsService;
-        private readonly ILogger<ApiController> _logger;
+        public static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApiController(ILogger<ApiController> logger, INewsService newsService)
+        public ApiController(INewsService newsService)
         {
-            _logger = logger;
             _newsService = newsService;
         }
 
         [HttpGet("posts")]
-        public IEnumerable<News> GetNewsByDate(DateTime from, DateTime to)
+        public IActionResult GetNewsByDate(DateTime from, DateTime to)
         {
-            return _newsService.GetNewsByDate(from, to.AddDays(1).AddMinutes(-1));
+            try
+            {
+                throw new NullReferenceException("Ou ou ou");
+                return Ok(_newsService.GetNewsByDate(from, to.AddDays(1).AddMinutes(-1)));
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured watch in Log");
+            }
+            
         }
        
         [HttpGet("topten")]
-        public IEnumerable<string> GetTopTenWordsInNews()
+        public IActionResult GetTopTenWordsInNews()
         {
-            return _newsService.GetTopTenWordsInNews();
+            try
+            {
+                return Ok(_newsService.GetTopTenWordsInNews());
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured watch in Log");
+            }
+            
         }
      
         [HttpGet("search")]
-        public IEnumerable<News> SearchByText(string text)
+        public IActionResult SearchByText(string text)
         {
-            return _newsService.SearchByText(text);
+            try
+            {
+                return Ok(_newsService.SearchByText(text));
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured watch in Log");
+            }
+            
         }
     }
 }
