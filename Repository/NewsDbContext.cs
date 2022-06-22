@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models.Tables;
-using Repository.ForInitializingDb;
 
 namespace Repository
 {
@@ -14,8 +13,7 @@ namespace Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<News>().HasData(new InformNews().GetData());    
-            modelBuilder.Entity<User>().HasData(new UsersData().Get());
+            DbDataInitializer.Initialize(modelBuilder);
         }
     }
 }
