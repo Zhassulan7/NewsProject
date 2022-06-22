@@ -1,7 +1,6 @@
 ﻿using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
-using Models;
-using System.Net;
+using Models.Tables;
 using System.Text;
 
 namespace Repository.ForInitializingDb

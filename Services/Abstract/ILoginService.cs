@@ -1,10 +1,10 @@
-﻿using Models;
+﻿using Models.Tables;
 
 namespace Services.Abstract
 {
     public interface ILoginService
     {
-        Login AuthenticateOrNull(string username, string password);
-        string GenerateToken(Login login);
+        User AuthenticateOrNull(string username, string password);
+        string GenerateToken(User login);
     }
 }

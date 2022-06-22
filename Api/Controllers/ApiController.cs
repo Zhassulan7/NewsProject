@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using Models.Tables;
 using Services.Abstract;
 
 namespace NewsProject.Controllers
 {
     [ApiController]
     [Route("api/")]
+    [Authorize(Roles = "Employee,Admin")]
     public class ApiController : ControllerBase
     {
         private readonly INewsService _newsService;
@@ -25,14 +26,12 @@ namespace NewsProject.Controllers
         }
        
         [HttpGet("topten")]
-        [Authorize(Roles = "Admin")]
         public IEnumerable<string> GetTopTenWordsInNews()
         {
             return _newsService.GetTopTenWordsInNews();
         }
      
         [HttpGet("search")]
-        [Authorize(Roles = "Employee,Admin")]
         public IEnumerable<News> SearchByText(string text)
         {
             return _newsService.SearchByText(text);

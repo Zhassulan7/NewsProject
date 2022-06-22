@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using Models.Tables;
 using Repository;
 using Services.Abstract;
 

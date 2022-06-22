@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Models;
+using Models.Tables;
 using Repository;
 using Services.Abstract;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,9 +21,9 @@ namespace Services.Concrete
             _config = config;
         }
 
-        public Login AuthenticateOrNull(string username, string password)
+        public User AuthenticateOrNull(string username, string password)
         {
-            var currentUser = _newsDbContext.Logins.FirstOrDefault(l => l.UserName.ToLower() == username.ToLower());
+            var currentUser = _newsDbContext.Logins.FirstOrDefault(l => l.Name.ToLower() == username.ToLower());
 
             if (currentUser is not null && VerifyHashedPassword(currentUser.Password, password))
             {
@@ -33,14 +33,14 @@ namespace Services.Concrete
             return null;
         }
 
-        public string GenerateToken(Login login)
+        public string GenerateToken(User login)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, login.UserName),
+                new Claim(ClaimTypes.NameIdentifier, login.Name),
                 new Claim(ClaimTypes.Role, login.Role)
             };
 
@@ -87,10 +87,10 @@ namespace Services.Concrete
 
         private static bool ByteArraysEqual(byte[] firstHash, byte[] secondHash)
         {
-            int _minHashLength = firstHash.Length <= secondHash.Length ? firstHash.Length : secondHash.Length;
+            int minHashLength = firstHash.Length <= secondHash.Length ? firstHash.Length : secondHash.Length;
             var xor = firstHash.Length ^ secondHash.Length;
 
-            for (int i = 0; i < _minHashLength; i++)
+            for (int i = 0; i < minHashLength; i++)
                 xor |= firstHash[i] ^ secondHash[i];
 
             return 0 == xor;

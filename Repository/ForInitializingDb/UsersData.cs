@@ -1,25 +1,25 @@
-﻿using Models;
-using Models.Enums;
+﻿using Models.Enums;
+using Models.Tables;
 using System.Security.Cryptography;
 
 namespace Repository.ForInitializingDb
 {
     public class UsersData
     {
-        public List<Login> Get()
+        public List<User> Get()
         {
-            return new List<Login> {
-                new Login
+            return new List<User> {
+                new User
                 {
                     Id = 1,
-                    UserName = "Ninja",
+                    Name = "Ninja",
                     Password = HashPassword("admin"),
                     Role = UserRoles.Admin.ToString()
                 },
-                new Login
+                new User
                 {
                     Id = 2,
-                    UserName = "Npc",
+                    Name = "Npc",
                     Password = HashPassword("user"),
                     Role = UserRoles.Employee.ToString()
                 }

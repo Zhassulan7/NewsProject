@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Tables;
 using Repository.ForInitializingDb;
 
 namespace Repository
@@ -10,12 +10,12 @@ namespace Repository
             base(options) => Database.EnsureCreated();
 
         public DbSet<News> News { get; set; }
-        public DbSet<Login> Logins { get; set; }
+        public DbSet<User> Logins { get; set; }
 
         protected override async void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<News>().HasData(await new InformNews().GetData());    
-            modelBuilder.Entity<Login>().HasData(new UsersData().Get());
+            modelBuilder.Entity<User>().HasData(new UsersData().Get());
         }
     }
 }
