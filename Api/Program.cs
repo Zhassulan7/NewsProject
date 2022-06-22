@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NewsProject;
 using Repository;
 using Services.Abstract;
 using Services.Concrete;
@@ -32,8 +33,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<INewsService, NewsService>();
-builder.Services.AddTransient<ILoginService, LoginService>();
+DependencyInjections.RegisterServices(builder.Services);
 
 var app = builder.Build();
 
