@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using NLog;
 using Services.Abstract;
 
 namespace NewsProject.Controllers
@@ -11,7 +10,6 @@ namespace NewsProject.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILoginService _loginService;
-        public static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public LoginController(ILoginService loginService)
         {
@@ -22,25 +20,15 @@ namespace NewsProject.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
-            try
+            var user = await _loginService.GetUserOrNull(login.UserName, login.Password);
+
+            if (user != null)
             {
-                var user = await _loginService.GetUserOrNull(login.UserName, login.Password);
-
-                if (user != null)
-                {
-                    var token = _loginService.GenerateToken(user);
-                    return Ok(token);
-                }
-
-                return NotFound("User not found");
+                var token = _loginService.GenerateToken(user);
+                return Ok(token);
             }
-            catch (Exception e)
-            {
-                _logger.Error(e);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured watch in Log");
-            }
-            
+            return NotFound("User not found");  
         }
     }
 }

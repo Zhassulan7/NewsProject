@@ -1,6 +1,8 @@
 ﻿using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
 using Models.Tables;
+using NLog;
 using System.Text;
 
 namespace Repository.ForInitializingDb
@@ -9,6 +11,7 @@ namespace Repository.ForInitializingDb
     {
         private readonly string _mainUrl = "https://lenta.inform.kz";
         private readonly string _linksPage = "https://lenta.inform.kz/ru/archive/?date=";
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public IEnumerable<News> GetData()
         {
@@ -33,43 +36,72 @@ namespace Repository.ForInitializingDb
 
         private string GetHtmlByLink(string url)
         {
-            var httpClient =  new HttpClient();
-            var data = httpClient.GetStringAsync(url).Result;
-
-            return data;
+            try
+            {
+                var httpClient = new HttpClient();
+                var data = httpClient.GetStringAsync(url).Result;
+                return data;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                throw;
+            }           
         }
 
         private IEnumerable<News> GetNewsByPages(IEnumerable<string> htmlPages)
         {
-            foreach (var html in htmlPages)
+            try
             {
-                var htmlDocument = new HtmlDocument();
-                htmlDocument.LoadHtml(html);
+                var result = new List<News>();
 
-                var text = new StringBuilder();
-
-                foreach (var innerText in htmlDocument.DocumentNode.QuerySelectorAll("p").Select(p => p.InnerText))
+                foreach (var html in htmlPages)
                 {
-                    text.Append(innerText ?? "");
+                    var htmlDocument = new HtmlDocument();
+                    htmlDocument.LoadHtml(html);
+
+                    var text = new StringBuilder();
+
+                    foreach (var innerText in htmlDocument.DocumentNode.QuerySelectorAll("p").Select(p => p.InnerText))
+                    {
+                        text.Append(innerText ?? "");
+                    }
+
+                    result.Add(new News
+                    {
+                        CreateDate = DateTime.Parse(htmlDocument.DocumentNode.QuerySelector(".date_article").InnerText),
+                        Title = htmlDocument.DocumentNode.QuerySelector("h1").InnerText,
+                        Text = text.ToString()
+                    });
                 }
 
-                yield return new News
-                {
-                    CreateDate = DateTime.Parse(htmlDocument.DocumentNode.QuerySelector(".date_article").InnerText),
-                    Title = htmlDocument.DocumentNode.QuerySelector("h1").InnerText,
-                    Text = text.ToString()
-                };
+                return result;
             }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                throw;
+            }
+            
         }
 
         private IEnumerable<string> GetLinksOnNews(string html)
         {
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(html);
-            var links = htmlDocument.DocumentNode
-                .QuerySelectorAll(".lenta_news_title")
-                .Select(t => _mainUrl + t.Attributes["href"].Value);
-            return links;
+            try
+            {
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(html);
+                var links = htmlDocument.DocumentNode
+                    .QuerySelectorAll(".lenta_news_title")
+                    .Select(t => _mainUrl + t.Attributes["href"].Value);
+                return links;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                throw;
+            }
+            
         }
     }
 }

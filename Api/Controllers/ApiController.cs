@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models.Tables;
-using NLog;
 using Services.Abstract;
 
 namespace NewsProject.Controllers
@@ -12,7 +10,6 @@ namespace NewsProject.Controllers
     public class ApiController : ControllerBase
     {
         private readonly INewsService _newsService;
-        public static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ApiController(INewsService newsService)
         {
